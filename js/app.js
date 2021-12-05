@@ -718,6 +718,42 @@ animate({
       Element.prototype.msMatchesSelector;
   }
 })();
+document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("click", documentActions);
+
+    // Actions (делегирование события click)
+    function documentActions(e) {
+        const targetElement = e.target;
+        if (window.innerWidth > 768 && isMobile.any()) {
+            if (targetElement.classList.contains('menu__arrow')){
+                targetElement.closest('.menu__item').classList.toggle('_hover');
+            }
+            if (!targetElement.closest('.menu__item') && document.querySelectorAll('.menu__item._hover').length > 0){
+                _removeClasses(document.querySelectorAll('.menu__item._hover'), "_hover");
+            }
+        }
+        if (targetElement.parentNode.classList.contains('search-header__icon')){
+            document.querySelector('.search-header').classList.add('_active');
+            e.preventDefault();
+        }
+        else if (!targetElement.closest('.search-header') && document.querySelectorAll('.search-header._active').length > 0){
+            document.querySelector('.search-header').classList.remove('_active');
+        }
+    }
+
+    const headerElement = document.querySelector('.header');
+
+    const callback = function (entries, _observer) {
+        if (entries[0].isIntersecting) {
+            headerElement.classList.remove('_scroll');
+        } else {
+            headerElement.classList.add('_scroll');
+        }
+    }
+
+    const headerObserver = new IntersectionObserver(callback);
+    headerObserver.observe(headerElement);
+});
 // let btn = document.querySelectorAll('button[type="submit"],input[type="submit"]');
 let forms = document.querySelectorAll('form');
 if (forms.length > 0) {
@@ -1261,39 +1297,3 @@ if (priceSlider) {
 		priceSlider.noUiSlider.set([priceStartValue, priceEndValue]);
 	}
 }
-document.addEventListener("DOMContentLoaded", function() {
-    document.addEventListener("click", documentActions);
-
-    // Actions (делегирование события click)
-    function documentActions(e) {
-        const targetElement = e.target;
-        if (window.innerWidth > 768 && isMobile.any()) {
-            if (targetElement.classList.contains('menu__arrow')){
-                targetElement.closest('.menu__item').classList.toggle('_hover');
-            }
-            if (!targetElement.closest('.menu__item') && document.querySelectorAll('.menu__item._hover').length > 0){
-                _removeClasses(document.querySelectorAll('.menu__item._hover'), "_hover");
-            }
-        }
-        if (targetElement.parentNode.classList.contains('search-header__icon')){
-            document.querySelector('.search-header').classList.add('_active');
-            e.preventDefault();
-        }
-        else if (!targetElement.closest('.search-header') && document.querySelectorAll('.search-header._active').length > 0){
-            document.querySelector('.search-header').classList.remove('_active');
-        }
-    }
-
-    const headerElement = document.querySelector('.header');
-
-    const callback = function (entries, _observer) {
-        if (entries[0].isIntersecting) {
-            headerElement.classList.remove('_scroll');
-        } else {
-            headerElement.classList.add('_scroll');
-        }
-    }
-
-    const headerObserver = new IntersectionObserver(callback);
-    headerObserver.observe(headerElement);
-});
